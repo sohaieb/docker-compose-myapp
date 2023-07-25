@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mywebbapp
+      MYSQL_USER: sohaieb
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - mywebapp-db-data:/var/lib/mysql
+    networks:
+      - mywebb-net
+
+  backend:
+    depends_on:
+      - db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mywebapp-backend
+    environment:
+      DB_HOST: db
+    ports:
+      - 3001:3001
+    networks:
+      - mywebb-net
+    volumes:
+      - /backend/node_modules
+      - C:\Users\sohaieb\Desktop\my-web-app\backend:/backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mywebapp-frontend
+    networks:
+      - mywebb-net
+    ports:
+      - 4200:4200
+    volumes:
+      - /frontend/node_modules
+      - C:\Users\sohaieb\Desktop\my-web-app\frontend:/frontend
+
+
+volumes:
+  mywebapp-db-data:
+    name: mywebapp-db-data
+
+networks:
+  mywebb-net:
+    name: mywebb-net
+
